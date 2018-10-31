@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>hello word</title>
+	<link href="{dede:global.cfg_templets_skin/}/style/dedecms.css" rel="stylesheet" media="screen" type="text/css" />
+</head>
+<body>
+	{dede:include filename="head.htm"/}
+
+	<?php foreach($data as $k => $v): ?>
+	<?php echo $k.'-=-'.$v.'<br/>'; ?>
+	<?php endforeach; ?>
+
+	{dede:include filename="footer.htm"/}
+</body>
+</html>
