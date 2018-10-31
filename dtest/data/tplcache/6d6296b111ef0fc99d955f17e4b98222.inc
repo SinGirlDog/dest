@@ -1,1 +1,0 @@
-<li><a href="[field:arcurl/]">[field:title function='TitleReplace("MEM","@me")'/]</a></li>
