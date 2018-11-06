@@ -12,4 +12,5 @@ $GLOBALS['allmodules']['b437d85a7a7bc778c9c79b5ec36ab9aa']='b437d85a7a7bc778c9c7
 $GLOBALS['allmodules']['fcd00dbb5a51d65aff6c248d221d8bcd']='fcd00dbb5a51d65aff6c248d221d8bcd.xml';
 $GLOBALS['allmodules']['be722dbfa3cb3cb5628aab2d767ff62e']='be722dbfa3cb3cb5628aab2d767ff62e.xml';
 $GLOBALS['allmodules']['43519ff7a016a23a8d91ac0fe4e3a9a8']='43519ff7a016a23a8d91ac0fe4e3a9a8.xml';
+$GLOBALS['allmodules']['daaee94cad03ed8b9e779536d4837d0b']='daaee94cad03ed8b9e779536d4837d0b.xml';
 ?>

@@ -14,9 +14,10 @@ $cfg_Cs[10]=array(0,1,1,'57uH5qKmQ01T');
 $cfg_Cs[11]=array(0,1,1,'5biu5Yqp5paH5qGj');
 $cfg_Cs[12]=array(0,1,1,'RU1CQQ==');
 $cfg_Cs[13]=array(0,1,1,'IOS5puWFpQ==');
+$cfg_Cs[20]=array(0,1,0,'6Zeu562U');
 $cfg_Cs[14]=array(13,1,1,'c2h1cnVB');
 $cfg_Cs[15]=array(13,1,1,'c2h1cnVC');
 $cfg_Cs[16]=array(12,1,1,'RU1CQV8x');
 $cfg_Cs[17]=array(12,1,1,'RU1CQV8y');
-$cfg_Cs[19]=array(0,1,0,'6Zeu562U');
+$cfg_Cs[23]=array(0,1,0,'RVhBTQ==');
 ?>

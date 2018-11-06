@@ -1,21 +1,22 @@
 <?php
 
-class test extends Control {
+class index extends Control {
 
-    function test(){
+    function index(){
         parent::__construct();
-        
+        // echo "<pre/>";
+        // var_dump($this->tpl);die();
     }
 
     //方法前面需加上ac_
-    public function ac_test() {
-        // echo '测试',var_dump($_SERVER['REQUEST_URI']),DEDEXAM,DEDEAPPTPL,$this->style;
+    public function ac_index() {
+        // echo '测试',var_dump($_SERVER['REQUEST_URI']),DEDEXAM,DEDEAPPTPL,$this->style;die;
         $data = array(
             'test_one'=>'测试——1',
             'test_two'=>'测试——2',
         );
         $GLOBALS['data'] = $data;
-        $this->SetTemplate('index.htm');
+        $this->SetTemplate('index_exam.htm');
         $this->Display();
     }
      

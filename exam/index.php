@@ -16,7 +16,5 @@ require_once(DEDEXAM.'/data/common.inc.php');
 //http://网站/自定义模块/index.php?c=控制器&a=方法
 $ct = Request('c', 'test');
 $ac = Request('a', 'test');
- // echo 'hello world',file_exists(DEDECONTROL . '/' . $ct . '.php');
- // die;
 //统一应用程序入口
 RunApp($ct, $ac);

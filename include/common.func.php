@@ -56,8 +56,8 @@ function make_hash()
 {
     $rand = dede_random_bytes(16);
     $_SESSION['token'] = ($rand === FALSE)
-        ? md5(uniqid(mt_rand(), TRUE))
-        : bin2hex($rand);
+    ? md5(uniqid(mt_rand(), TRUE))
+    : bin2hex($rand);
     return $_SESSION['token'];
 }
 
@@ -176,46 +176,46 @@ function RunApp($ct, $ac = '',$directory = '')
     $ac = preg_replace("/[^0-9a-z_]/i", '', $ac);
 
     $ac = empty ( $ac ) ? $ac = 'index' : $ac;
-	if(!empty($directory)) $path = DEDECONTROL.'/'.$directory. '/' . $ct . '.php';
-	else $path = DEDECONTROL . '/' . $ct . '.php';
+    if(!empty($directory)) $path = DEDECONTROL.'/'.$directory. '/' . $ct . '.php';
+    else $path = DEDECONTROL . '/' . $ct . '.php';
 
-	if (file_exists ( $path ))
-	{
-		require $path;
-	} else {
-		 if (DEBUG_LEVEL === TRUE)
-        {
-            trigger_error("Load Controller false!");
-        }
-        //生产环境中，找不到控制器的情况不需要记录日志
-        else
-        {
-            header ( "location:/404.html" );
-            die ();
-        }
-	}
-	$action = 'ac_'.$ac;
-    $loaderr = FALSE;
-    $instance = new $ct ( );
-    if (method_exists ( $instance, $action ) === TRUE)
+    if (file_exists ( $path ))
     {
-        $instance->$action();
-        unset($instance);
-    } else $loaderr = TRUE;
-
-    if ($loaderr)
-    {
-        if (DEBUG_LEVEL === TRUE)
-        {
-            trigger_error("Load Method false!");
-        }
-        //生产环境中，找不到控制器的情况不需要记录日志
-        else
-        {
-            header ( "location:/404.html" );
-            die ();
-        }
+      require $path;
+  } else {
+     if (DEBUG_LEVEL === TRUE)
+     {
+        trigger_error("Load Controller false!");
     }
+        //生产环境中，找不到控制器的情况不需要记录日志
+    else
+    {
+        header ( "location:/404.html" );
+        die ();
+    }
+}
+$action = 'ac_'.$ac;
+$loaderr = FALSE;
+$instance = new $ct ( );
+if (method_exists ( $instance, $action ) === TRUE)
+{
+    $instance->$action();
+    unset($instance);
+} else $loaderr = TRUE;
+
+if ($loaderr)
+{
+    if (DEBUG_LEVEL === TRUE)
+    {
+        trigger_error("Load Method false!");
+    }
+        //生产环境中，找不到控制器的情况不需要记录日志
+    else
+    {
+        header ( "location:/404.html" );
+        die ();
+    }
+}
 }
 
 /**
@@ -262,9 +262,9 @@ function UpdateStat()
 
 $arrs1 = array(0x63,0x66,0x67,0x5f,0x70,0x6f,0x77,0x65,0x72,0x62,0x79);
 $arrs2 = array(0x20,0x3c,0x61,0x20,0x68,0x72,0x65,0x66,0x3d,0x68,0x74,0x74,0x70,0x3a,0x2f,0x2f,
-0x77,0x77,0x77,0x2e,0x64,0x65,0x64,0x65,0x63,0x6d,0x73,0x2e,0x63,0x6f,0x6d,0x20,0x74,0x61,0x72,
-0x67,0x65,0x74,0x3d,0x27,0x5f,0x62,0x6c,0x61,0x6e,0x6b,0x27,0x3e,0x50,0x6f,0x77,0x65,0x72,0x20,
-0x62,0x79,0x20,0x44,0x65,0x64,0x65,0x43,0x6d,0x73,0x3c,0x2f,0x61,0x3e);
+    0x77,0x77,0x77,0x2e,0x64,0x65,0x64,0x65,0x63,0x6d,0x73,0x2e,0x63,0x6f,0x6d,0x20,0x74,0x61,0x72,
+    0x67,0x65,0x74,0x3d,0x27,0x5f,0x62,0x6c,0x61,0x6e,0x6b,0x27,0x3e,0x50,0x6f,0x77,0x65,0x72,0x20,
+    0x62,0x79,0x20,0x44,0x65,0x64,0x65,0x43,0x6d,0x73,0x3c,0x2f,0x61,0x3e);
 
 /**
  *  短消息函数,可以在某个动作处理后友好的提示信息
@@ -307,9 +307,9 @@ function ShowMsg($msg, $gourl, $onlymsg=0, $limittime=0)
         }
 
         $func .= "      var pgo=0;
-      function JumpUrl(){
-        if(pgo==0){ location='$gourl'; pgo=1; }
-      }\r\n";
+        function JumpUrl(){
+            if(pgo==0){ location='$gourl'; pgo=1; }
+        }\r\n";
         $rmsg = $func;
         $rmsg .= "document.write(\"<br /><div style='width:450px;padding:0px;border:1px solid #DADADA;'>";
         $rmsg .= "<div style='padding:6px;font-size:12px;border-bottom:1px solid #DADADA;background:#DBEEBD url({$GLOBALS['cfg_plus_dir']}/img/wbg.gif)';'><b>DedeCMS 提示信息！</b></div>\");\r\n";
@@ -368,4 +368,16 @@ function ResetVdValue()
 if( file_exists(DEDEINC.'/extend.func.php') )
 {
     require_once(DEDEINC.'/extend.func.php');
+}
+
+
+//独立模块兼容引用默认头尾模版块
+function pasterTempletDiy($path)
+{
+    require_once(DEDEINC."/arc.partview.class.php");
+    global $cfg_basedir,$cfg_templets_dir;
+    $tmpfile = $cfg_basedir.$cfg_templets_dir."/".$path;//模版文件的路径
+    $dtp = new PartView();
+    $dtp->SetTemplet($tmpfile);
+    $dtp->Display();
 }

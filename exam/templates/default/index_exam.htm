@@ -5,7 +5,10 @@
 	<link href="{dede:global.cfg_templets_skin/}/style/dedecms.css" rel="stylesheet" media="screen" type="text/css" />
 </head>
 <body>
-	{dede:include filename="head.htm"/}
+	<?php 
+	pasterTempletDiy("default/head.htm"); 
+	?>
+	<?php echo $rewards; ?>
 
 	<?php foreach($data as $k => $v): ?>
 	<?php echo $k.'-=-'.$v.'<br/>'; ?>
