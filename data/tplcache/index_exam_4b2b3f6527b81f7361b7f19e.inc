@@ -10,7 +10,36 @@ $fields = array();
 <body>
 	<?php 
 	pasterTempletDiy("default/head.htm"); 
-	 echo $rewards;  foreach($data as $k => $v):  echo $k.'-=-'.$v.'<br/>';  endforeach;  include $this->CompilerInclude("footer.htm");
+	?>
+
+	<div style="margin:0 auto;width:100%;text-align:center;">
+		<ul style="margin:0 auto;width:90%;">
+			<li>welcome</li>
+			<li>
+				<span>select:</span>
+				<select>
+					<option>-请选择-</option>
+					<option>-飞-</option>
+					<option>-马-</option>
+					<option>-牧-</option>
+					<option>-场-</option>
+				</select>
+			</li>
+			<li>
+				<span>name</span>
+				<input name="name" id="name" value="" placeholder="welcome to feimamuchang" />
+			</li>
+			<li>
+				<span>mobile</span>
+				<input name="mobile" id="mobile" value="" placeholder="welcome to feimamuchang" />
+			</li>
+			<li>
+				<input type="button" id="sure" value="Are U Sure"/>
+			</li>
+		</ul>
+	</div>
+
+	<?php include $this->CompilerInclude("footer.htm");
  ?>
 </body>
 </html>
