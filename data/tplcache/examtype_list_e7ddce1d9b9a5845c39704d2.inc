@@ -41,9 +41,12 @@ $fields = array();
       <td>
         <table width="100%" border="0" cellpadding="0" cellspacing="1" align="center" style="margin:0px auto;background:#ffffff;">
           <tr height="25" bgcolor="#FBFCE2" >
-            <td width="5%" align="center">id</td>
-            <td>分类名称</td>
-            <td width="5%">排序</td>
+            <td width="10%" align="center">id</td>
+            <td width="10%">分类名称</td>
+            <td width="10%">单选题数</td>
+            <td width="10%">单选分数</td>
+            <td width="10%">多选题数</td>
+            <td width="10%">多选分数</td>
             <td width="20%" align="center">管理操作</td>
           </tr>
           <?php
@@ -52,7 +55,10 @@ $fields = array();
           <tr>
             <td  align="center"><?php echo $examtype['id'];?></td>
             <td><?php echo $examtype['name'];?></td>
-            <td><input type="text" name="disorders[<?php echo $examtype['id'];?>]" value="<?php echo $examtype['disorder'];?>" /></td>
+            <td><?php echo $examtype['onlynum'];?></td>
+            <td><?php echo $examtype['onlyfenshu'];?></td>
+            <td><?php echo $examtype['morenum'];?></td>
+            <td><?php echo $examtype['morefenshu'];?></td>
             <td align="center"><a href="?ct=examtype&ac=add&name=<?php echo $examtype['name'];?>&id=<?php echo $examtype['id'];?>&amp&height=200&amp;width=450" class="thickbox">添加子类</a> <a href='?ct=examtype&ac=edit&amp;id=<?php echo $examtype['id'];?>&height=200&amp;width=450' class="thickbox">修改</a> <a href='#' onClick="javascript:del(<?php echo $examtype['id'];?>)">删除</a></td>
           </tr>
           <?php if(!empty($examtype['son'])) echo $examtype['son']; }?>

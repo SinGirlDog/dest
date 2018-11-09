@@ -13,7 +13,7 @@ if(file_exists($path)) {
     $examtypes = unserialize($examtypes);
 }else{
     global $dsql;
-    $query = "SELECT * FROM `#@__examtype` ORDER BY disorder DESC, id ASC";
+    $query = "SELECT * FROM `#@__examtype` ORDER BY id ASC";
     $dsql->Execute('me',$query);
     $tids = $tid2s = $examtypes = array();
     while($examtype = $dsql->getarray())

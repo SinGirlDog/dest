@@ -30,8 +30,11 @@ class examtype extends Control
                     $son .= '<tr>
                     <td align="center">'.$examtype_son['id'].'</td>
                     <td> |--'.$examtype_son['name'].'</td>
-                    <td><input type="text" name="disorders['.$examtype_son['id'].']" value="'.$examtype_son['disorder'].'" /></td>
-                    <td align="center"><a href="?ct=examtype&ac=edit&amp;id='.$examtype_son['id'].'&height=200&amp;width=450" class=\'thickbox\'>修改</a> 
+                    <td>'.$examtype_son['onlynum'].'</td>
+                    <td>'.$examtype_son['onlyfenshu'].'</td>
+                    <td>'.$examtype_son['morenum'].'</td>
+                    <td>'.$examtype_son['morefenshu'].'</td>
+                    <td align="center"><a href="?ct=examtype&ac=edit&amp;id='.$examtype_son['id'].'" class=\'thickbox\'>修改</a> 
                     <a href="#" onClick="javascript:del('.$examtype_son['id'].')">删除</a></td>
                     </tr>';
                 }      
@@ -100,7 +103,11 @@ class examtype extends Control
         $data['id'] = request('id', '');
         $data['name'] = request('name', '');
         $data['reid'] = request('reid', '');
-        $data['disorder'] = request('disorder', '');
+        $data['onlynum'] = request('onlynum', '');
+        $data['onlyfenshu'] = request('onlyfenshu', '');
+        $data['morenum'] = request('morenum', '');
+        $data['morefenshu'] = request('morefenshu', '');
+
         if($data['name'] == "")
         {
             ShowMsg('分类名称不能为空','?ct=examtype');
@@ -156,6 +163,10 @@ class examtype extends Control
     {
         $data['name'] = request('name', '');
         $data['reid'] = request('reid', '');
+        $data['onlynum'] = request('onlynum', '');
+        $data['onlyfenshu'] = request('onlyfenshu', '');
+        $data['morenum'] = request('morenum', '');
+        $data['morefenshu'] = request('morefenshu', '');
         if(empty($data['name']))
         {
             ShowMsg('分类名称不能为空', '?ct=examtype');

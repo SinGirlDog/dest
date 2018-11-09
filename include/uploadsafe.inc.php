@@ -56,5 +56,6 @@ foreach($_FILES as $_key=>$_value)
             exit('Upload filetype not allow !');
         }
     }
+    echo $_key;
 }
 ?>

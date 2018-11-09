@@ -15,7 +15,7 @@ class mtype extends Model
      */
     function get_examtype($wheresql = "")
     {
-        $query = "SELECT id, name, reid FROM `#@__examtype` $wheresql ORDER BY disorder DESC";
+        $query = "SELECT id, name, reid FROM `#@__examtype` $wheresql ORDER BY id DESC";
         $this->dsql->SetQuery($query);
         $this->dsql->Execute();
         $examtypes = array();
@@ -70,7 +70,7 @@ class mtype extends Model
      */
     function get_alltype()
     {
-        $query = "SELECT * FROM `#@__examtype` ORDER BY disorder DESC, id ASC";
+        $query = "SELECT * FROM `#@__examtype` ORDER BY id ASC";
         $this->dsql->SetQuery($query);
         $this->dsql->Execute();
         $tids = $tid2s = $examtypes = array();
@@ -111,7 +111,7 @@ class mtype extends Model
         $sectorscache = '<option value="0">无(作为一级分类)</option>';
         if($type == 2) $wheresql = "WHERE reid=0";
         else $wheresql = "WHERE reid=0 and id<>'$id'";
-        $query = "SELECT * FROM `#@__examtype` {$wheresql} ORDER BY disorder ASC, id ASC";
+        $query = "SELECT * FROM `#@__examtype` {$wheresql} ORDER BY id ASC";
 		$this->dsql->SetQuery($query);
 		$this->dsql->Execute();
 		while($topsector = $this->dsql->GetArray())
@@ -141,7 +141,7 @@ class mtype extends Model
      */
     function save_edit($data = array())
     {
-        $query = "UPDATE `#@__examtype` SET name='{$data['name']}', reid='{$data['reid']}', disorder='{$data['disorder']}'
+        $query = "UPDATE `#@__examtype` SET name='{$data['name']}', reid='{$data['reid']}', onlynum='{$data['onlynum']}', onlyfenshu='{$data['onlyfenshu']}', morenum='{$data['morenum']}', morefenshu='{$data['morefenshu']}'
                 WHERE id='{$data['id']}' ";
 		if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
         else return FALSE;  
@@ -192,7 +192,7 @@ class mtype extends Model
     {
         if(is_array($data))
         {
-            $query = "INSERT INTO `#@__examtype`(name, reid) VALUES('{$data['name']}','{$data['reid']}');";
+            $query = "INSERT INTO `#@__examtype`(name, reid,onlynum,onlyfenshu,morenum,morefenshu) VALUES('{$data['name']}','{$data['reid']}','{$data['onlynum']}','{$data['onlyfenshu']}','{$data['morenum']}','{$data['morefenshu']}');";
     		if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
             else return FALSE; 
         }else{
