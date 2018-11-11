@@ -1,11 +1,11 @@
 <?php   if(!defined('DEDEINC')) exit("Request Error!");
 /**
- * 分类(普通)
+ * 文件
  *
- * @version        $Id: mtype.php 2018/11/05  Sun $
+ * @version        $Id: mtype.php 15:57 2018/11/11 Sun $
  */
  
-class mtype extends Model
+class mfile extends Model
 {   
     /**
      * 发表文章时的栏目信息
@@ -184,7 +184,7 @@ class mtype extends Model
     }
     
     /**
-     * 保存一个新增的栏目
+     * 保存一个新增的卷宗
      * @param     array  $data
      * @return    string
      */
@@ -192,25 +192,12 @@ class mtype extends Model
     {
         if(is_array($data))
         {
-            $query = "INSERT INTO `#@__examtype`(name, reid,onlynum,onlyfenshu,morenum,morefenshu) VALUES('{$data['name']}','{$data['reid']}','{$data['onlynum']}','{$data['onlyfenshu']}','{$data['morenum']}','{$data['morefenshu']}');";
+            $query = "INSERT INTO `#@__examfile`(id,reid,title,url,quest_ids,addtime,isdelete,updatetime) VALUES('','{$data['reid']}','{$data['title']}','{$data['url']}','{$data['quest_ids']}','{$data['addtime']}','{$data['isdelete']}','{$data['updatetime']}');";
     		if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
             else return FALSE; 
         }else{
             return FALSE;
         } 
-    }
-
-    function get_title_by_reid($reid){
-        $title = '';
-        if($reid!=0 && !empty($reid)){
-            $sql = "SELECT name,reid FROM `#@__examtype` WHERE id='{$reid}'";
-            $res = $this->dsql->GetOne($sql);
-            $title .= "-".$res['name'];
-            if($res['reid'] != 0){
-                $title .= $this->get_title_by_reid($res['reid']);
-            }
-            return $title;
-        }
     }
     
     

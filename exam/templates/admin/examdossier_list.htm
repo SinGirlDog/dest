@@ -4,10 +4,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $cfg_soft_lang;?>">
 	<title>EXAM管理</title>
 	<script type="text/javascript" src="static/js/j.js"></script>
+	<script type="text/javascript" src="static/js/xml.js"></script>
 	<script type="text/javascript" src="static/js/ajax.js"></script>
 	<link href="static/css/admin.css" rel="stylesheet" type="text/css" />
 </head>
-<body background='img/allbg.gif' leftmargin='8' topmargin='8'>
+<body leftmargin='8' topmargin='8'>
 	<div class="bodytitle">
 		<div class="bodytitleleft"></div>
 		<div class="bodytitletxt"  style="padding-left:10px;"><b>EXAM模块</b> -- EXAM卷宗管理</div>
@@ -69,13 +70,14 @@
 					</td>
 					<td>
 						<span>卷宗标题：</span>
-						<input name="title" value="未命名">
+						<input name="title" id="title" value="" placeholder="请填写标题">
 					</td>
-					<td>
-						<span>习题文件：</span>
-						<input type="file" id="upfile" name="upfile1"/>
+					<td><input type="button" value="选择" onclick="SelectXML('myform.upfile','small');"/>
+						<span>文件：</span>
+						<input type="text" id="upfile" name="upfile" value="" placeholder="请选择上传文件"/>
+						
 						(目前仅支持XML电子表格)
-						<input type="submit" id="submit" name='editsubmit' value="上船" class="shangchuan"/>
+						<input type="button" id="dosubmit" name='addsubmit' value="上船" class="shangchuan"/>
 						(文件大小最好小于1MB)
 					</td>
 				</tr>

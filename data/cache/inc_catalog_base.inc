@@ -19,5 +19,5 @@ $cfg_Cs[14]=array(13,1,1,'c2h1cnVB');
 $cfg_Cs[15]=array(13,1,1,'c2h1cnVC');
 $cfg_Cs[16]=array(12,1,1,'RU1CQV8x');
 $cfg_Cs[17]=array(12,1,1,'RU1CQV8y');
-$cfg_Cs[32]=array(0,1,0,'RVhBTQ==');
+$cfg_Cs[36]=array(0,1,0,'RVhBTQ==');
 ?>

@@ -21,6 +21,7 @@ class dossier extends Control{
         $this->question = $this->Model('mquestion');
         $this->style = 'admin';
         $this->type = $this->Model('mtype');
+        $this->myfile = $this->Model('mfile');
     }
 
     function ac_index(){
@@ -117,47 +118,30 @@ class dossier extends Control{
     }
 
     function ac_upload_xml(){
-        require(DEDEINC.'/uploadsafe.inc.php');
 
-        $_REQUEST['reid_level_1'] = request('reid_level_1', '');
-        $_REQUEST['reid_level_2'] = request('reid_level_2', '');
-        $_REQUEST['title'] = request('title', '');
-        // $_REQUEST['upfile1'] = request('upfile1', '');
-        $_REQUEST['upfile1'] = $upfile1;
+        $updat['reid_level_1'] = request('reid_level_1', '');
+        $updat['reid'] = request('reid_level_2', '');
+        $updat['title'] = request('title', '');
+        $updat['url'] = request('upfile', '');
+        $updat['title'] .= $this->type->get_title_by_reid($updat['reid']);
+        $updat['addtime'] = time();
+        $this->myfile->save_add($updat);
+        
+        var_dump($updat);
+        echo "<br/>hello up_xml world!";
+        die();
+    }
 
-        if(isset(${"upfile1"}) || is_uploaded_file(${"upfile1"})){
-            echo "hehe";die();
+    function ac_ajax_get_select(){
+        $html = "<option value=''>-请-选-择-</option>";
+        $reid = request('reid', '');
+        $examtp = $this->type->get_examtype("where reid = ".$reid);
+        if(is_array($examtp) && !empty($examtp)){
+            foreach($examtp as $key => $val){
+                $html .= "<option value='".$val['id']."'>".$val['name']."</option>";
+            }
         }
-
-        $upfile = "upfile1";
-        $upfile_name = "upfile1_name";
-        if(!isset(${$upfile}) || !isset(${$upfile_name}))
-        {
-            // continue;
-        }
-        $upfile = ${$upfile};
-        $upfile_name = ${$upfile_name};
-        if(is_uploaded_file($upfile))
-        {
-          echo $file;
-          echo $file_name;
-      }
-      echo $file_name;
-      var_dump($_REQUEST);
-      echo "<br/>hello up_xml world!";
-      die();
-  }
-
-  function ac_ajax_get_select(){
-    $html = "<option>-请-选-择-</option>";
-    $reid = request('reid', '');
-    $examtp = $this->type->get_examtype("where reid = ".$reid);
-    if(is_array($examtp) && !empty($examtp)){
-        foreach($examtp as $key => $val){
-           $html .= "<option value='".$val['id']."'>".$val['name']."</option>";
-       }
-   }
-   echo $html;
-}
+        echo $html;
+    }
 }
 ?>
