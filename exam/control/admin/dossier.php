@@ -11,7 +11,7 @@ class dossier extends Control{
         parent::__construct();
         $this->temp = DEDEAPPTPL.'/admin';
         $this->lurd = new Lurd('#@__examdossier', $this->temp, $this->temp.'/lurd');
-        $this->lurd->appName = "相关设置";
+        $this->lurd->appName = "JZ管理";
         $this->lurd->isDebug = FALSE;  //开启调试模式后每次都会生成模板
         $this->lurd->stringSafe = 2;  //默认1(只限制不安全的HTML[script、frame等]，0--为不限，2--为不支持HTML
         //获取url
@@ -22,17 +22,20 @@ class dossier extends Control{
         $this->style = 'admin';
         $this->type = $this->Model('mtype');
         $this->myfile = $this->Model('mfile');
+        $this->myexam = $this->Model('myexam');
     }
 
     function ac_index(){
         $this->ac_list();
-
     }
     
     //列出答案
     function ac_list(){
         $examtp = $this->type->get_examtype("where reid = 0");
         $GLOBALS['examtp'] = $examtp;
+
+        $file_list = $this->myfile->get_allfile();
+        $GLOBALS['file_list'] = $file_list;
         // $this->ac_xmluploadtest();
         $ifcheck = request('ifcheck', '2');
         $examid = request('examid', '');
@@ -79,23 +82,27 @@ class dossier extends Control{
     //删除
     function ac_delete()
     {
-        $ids = request('id', '');
-        if(!is_array($ids)){
-            ShowMsg('未选择要删除的答案!','-1');
+        $id = request('id', '');
+        if(empty($id)){
+            ShowMsg('未选择要删除的文件!','-1');
             exit();  
         }
-        foreach($ids as $id){
-            $id = preg_replace("#[^0-9]#","",$id);
-            if($id=="") continue;
-            $rs = $this->answer->del($id);
-            if(!$rs)
+        $file = $this->myfile->get_onefile($id);
+        if(!empty($file['quest_ids'])){
+            $quest_res = $this->myexam->del_by_ids($file['quest_ids']);
+            if(!$quest_res)
             {
-                ShowMsg("删失败！",$this->currurl);
+                ShowMsg("题目删失败！",'-1');
                 exit(); 
             }
         }
-        $this->question->update();
-        ShowMsg("删除成功！",$this->currurl);
+        $file_res = $this->myfile->del_by_id($id);
+        if($file_res){
+            ShowMsg("删除成功！",'-1');
+        }
+        else{
+            ShowMsg("删除失败！",'-1');
+        }
         exit(); 
     }
 
@@ -105,16 +112,6 @@ class dossier extends Control{
         $ac = request('bc', '');
         $this->lurd->ListenAll();
         exit();
-    }
-
-    function ac_xmluploadtest(){
-        require_once(DEDEEXAM.'/libraries/XML/xml.class.php');
-
-        //testing by TomSun
-        echo "hello testor <br/>";
-        echo DEDEEXAM,"<br/>";
-        $myXml = new xml();
-        var_dump($myXml);
     }
 
     function ac_upload_xml(){
@@ -127,9 +124,7 @@ class dossier extends Control{
         $updat['addtime'] = time();
         $this->myfile->save_add($updat);
         
-        var_dump($updat);
-        echo "<br/>hello up_xml world!";
-        die();
+        $this->ac_index();
     }
 
     function ac_ajax_get_select(){
@@ -142,6 +137,54 @@ class dossier extends Control{
             }
         }
         echo $html;
+    }
+
+    function ac_preview(){
+        $id = request('id','');
+        $thefile = $this->myfile->get_onefile($id);
+        $GLOBALS['thefile'] = $thefile;
+        $this->SetTemplate('dossier_preview.htm');
+        $this->Display();
+    }
+
+    function ac_parse_save(){
+        $file_id = request('id','');
+        $file_data = $this->myfile->get_onefile($file_id);
+        
+        require_once(DEDEEXAM.'/libraries/XML/xml.class.php');
+        $myXml = new xml();
+        $myXml->dir = $_SERVER['DOCUMENT_ROOT'].$file_data['url'];
+        $reform_data = $myXml->get_reform_data();
+
+        $file_quest_ids = array();
+        foreach($reform_data as $key => $reform_one)
+        {
+            $exam_data = array(
+                'reid'=>$file_data['reid'],
+                'title'=>substr($reform_one['question_body'],0,80),
+                'quest_body'=>$reform_one['question_body'],
+                'quest_answer'=>$reform_one['question_answer'],
+                'true_answer'=>$reform_one['true_answer'],
+                'quest_analysis'=>$reform_one['question_analysis'],
+                'quest_type'=>$reform_one['quest_type'],
+                'addtime'=>time(),
+                'updatetime'=>time(),
+            );
+            $exam_id = $this->myexam->save_one_add($exam_data);
+            $file_quest_ids[] = $exam_id;
+        }
+        $updata = array();
+        $updata['id'] = $file_id;
+        $updata['quest_ids'] = implode(',', $file_quest_ids);
+        $updata['updatetime'] = time();
+        $result = $this->myfile->save_edit($updata);
+        
+        if($result){
+            ShowMsg('入库成功','-1');
+        }
+        else{
+            ShowMsg('入库失败','-1');
+        }
     }
 }
 ?>

@@ -51,8 +51,6 @@ class xml {
 		return $this->reform_data;
 	}
 
-
-
 	private function xml_file_parse(){
 		if (file_exists($this->dir)){
 			$xml=simplexml_load_file($this->dir);

@@ -19,6 +19,7 @@ class issue extends Control
         $this->currurl = GetCurUrl();
         //载入模型
         $this->question = $this->Model('mquestion');
+        $this->myexam = $this->Model('myexam');
 	}
 	
     function ac_index()
@@ -30,6 +31,9 @@ class issue extends Control
     //列出EXAM
     function ac_list()
     {
+        $exam_list = $this->myexam->get_all_list("where 1");
+        $GLOBALS['exam_list'] = $exam_list;
+
         $status = request('status', '');
         $tid = request('tid', '');
         $tid2 = request('tid2', '');

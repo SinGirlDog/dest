@@ -4,7 +4,7 @@
  *
  * @version        $Id: mtype.php 15:57 2018/11/11 Sun $
  */
- 
+
 class mfile extends Model
 {   
     /**
@@ -32,19 +32,18 @@ class mfile extends Model
      * @param     int    $tid
      * @return    int
      */
-    function update_examtype($tid = "")
-    {
-        if($tid)
-        {
-            $query = "UPDATE `#@__examtype` SET asknum=asknum+1 WHERE id='$tid'";
-            $this->dsql->ExecuteNoneQuery($query);
-            return TRUE;
-        }else{
-            return FALSE;   
-        }
-
+   function update_examtype($tid = "")
+   {
+    if($tid){
+        $query = "UPDATE `#@__examtype` SET asknum=asknum+1 WHERE id='$tid'";
+        $this->dsql->ExecuteNoneQuery($query);
+        return TRUE;
     }
-     
+    else{
+        return FALSE;   
+    }
+}
+
     /**
      * 更新分类排序
      * @return    string
@@ -54,49 +53,30 @@ class mfile extends Model
         if(is_array($disorders))
         {
             foreach($disorders as $key => $disorder)
-        	{
-        		$query = "UPDATE `#@__examtype` SET disorder='$disorder' WHERE id='$key'";
-        		$this->dsql->ExecuteNoneQuery($query); 
-        	}
-        	return TRUE;
-        }else{
-            return FALSE;  
-        }
+            {
+              $query = "UPDATE `#@__examtype` SET disorder='$disorder' WHERE id='$key'";
+              $this->dsql->ExecuteNoneQuery($query); 
+          }
+          return TRUE;
+      }else{
+        return FALSE;  
     }
-    
+}
+
     /**
-     * 获取所有栏目
-     * @return    string
+     * 获取所有文件
+     * @return    array
      */
-    function get_alltype()
+    function get_allfile()
     {
-        $query = "SELECT * FROM `#@__examtype` ORDER BY id ASC";
+        $query = "SELECT * FROM `#@__examfile` WHERE isdelete != '1' ORDER BY addtime DESC";
         $this->dsql->SetQuery($query);
         $this->dsql->Execute();
-        $tids = $tid2s = $examtypes = array();
-        while($examtype = $this->dsql->GetArray())
-        {
-        	if($examtype['reid'] == 0)
-        	{
-        		$tids[] = $examtype;
-        	}else{
-        		$tid2s[] = $examtype;
-        	}
-        
+        $allfile = array();
+        while($file = $this->dsql->GetArray()){
+            $allfile[] = $file;
         }
-        foreach($tids as $tid)
-        {
-        	$examtypes[] = $tid;
-        	foreach($tid2s as $key => $tid2)
-        	{
-        		if($tid2['reid'] == $tid['id'])
-        		{
-        			$examtypes[] = $tid2;
-        			unset($tid2s[$key]);
-        		}
-        	}
-        }
-        return $examtypes;
+        return $allfile;
     }
     
     /**
@@ -112,77 +92,58 @@ class mfile extends Model
         if($type == 2) $wheresql = "WHERE reid=0";
         else $wheresql = "WHERE reid=0 and id<>'$id'";
         $query = "SELECT * FROM `#@__examtype` {$wheresql} ORDER BY id ASC";
-		$this->dsql->SetQuery($query);
-		$this->dsql->Execute();
-		while($topsector = $this->dsql->GetArray())
-		{
-			$check = '';
-			if($reid != 0 && $topsector['id'] == $reid) $check = 'selected';
-			$sectorscache .= '<option value="'.$topsector['id'].'" '. $check.'>'.$topsector['name'].'</option>';
-		}
+        $this->dsql->SetQuery($query);
+        $this->dsql->Execute();
+        while($topsector = $this->dsql->GetArray()){
+            $check = '';
+            if($reid != 0 && $topsector['id'] == $reid) $check = 'selected';
+            $sectorscache .= '<option value="'.$topsector['id'].'" '. $check.'>'.$topsector['name'].'</option>';
+        }
         return $sectorscache;
     }
-    
+
     /**
-     * 获取一个栏目
+     * 获取一个文件信息
      * @param    int $id
      * @return    string
      */
-    function get_onetype($id = "")
+    function get_onefile($id = "")
     {
-        $rs = $this->dsql->GetOne("SELECT * FROM `#@__examtype` WHERE id='{$id}'");
+        $rs = $this->dsql->GetOne("SELECT * FROM `#@__examfile` WHERE id='{$id}'");
         return $rs;
     }
     
     /**
-     * 保存一个编辑之后栏目
+     * 更新《存储》文件的题目ids字符串
      * @param     array  $data
-     * @return    string
+     * @return    bool
      */
     function save_edit($data = array())
     {
-        $query = "UPDATE `#@__examtype` SET name='{$data['name']}', reid='{$data['reid']}', onlynum='{$data['onlynum']}', onlyfenshu='{$data['onlyfenshu']}', morenum='{$data['morenum']}', morefenshu='{$data['morefenshu']}'
-                WHERE id='{$data['id']}' ";
-		if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
-        else return FALSE;  
+        $query = "UPDATE `#@__examfile` SET quest_ids='{$data['quest_ids']}',updatetime='{$data['updatetime']}' WHERE id='{$data['id']}' ";
+        if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
+        else return FALSE;
     }
     
    /**
-     * 删除一个栏目
+     * 删除一个文件记录(伪装删除)
      * @param     array  $id
      * @return    string
      */
-    function del_type($id = "")
-    {
+   function del_by_id($id = "")
+   {
         if($id){
-            $query = "DELETE FROM `#@__examtype` WHERE id='$id' OR reid='$id' "; 
-            if($this->dsql->ExecuteNoneQuery($query))
-            {
-                $query = "SELECT id FROM `#@__exam` WHERE tid='$id' OR tid2='$id'";
-                $this->dsql->SetQuery($query);
-                $this->dsql->Execute();
-                $askids = array();
-                while($arr = $this->dsql->GetArray())
-                {
-                    $askids[] = $arr['id'];
-                }
-                foreach ($askids as $askid) {
-                    $query = "DELETE FROM `#@__examcomment` WHERE askid='$id' ";
-                    $this->dsql->ExecuteNoneQuery($query);
-                }
-                $query2 = "DELETE FROM `#@__examanswer` WHERE tid='$id' OR tid2='$id' "; 
-                $query3 = "DELETE FROM `#@__examanswer` WHERE tid='$id' OR tid2='$id' "; 
-                $this->dsql->ExecuteNoneQuery($query2);
-                $this->dsql->ExecuteNoneQuery($query3);
-                return TRUE;   
-            }else{
+            $query = "UPDATE `#@__examfile` SET isdelete=1 WHERE id='{$id}' "; 
+            if($this->dsql->ExecuteNoneQuery($query)) 
+                return TRUE;
+            else
                 return FALSE;
-            } 
-        }else{
-           return FALSE;
+        }
+        else{
+            return FALSE;
         } 
     }
-    
+
     /**
      * 保存一个新增的卷宗
      * @param     array  $data
@@ -193,7 +154,7 @@ class mfile extends Model
         if(is_array($data))
         {
             $query = "INSERT INTO `#@__examfile`(id,reid,title,url,quest_ids,addtime,isdelete,updatetime) VALUES('','{$data['reid']}','{$data['title']}','{$data['url']}','{$data['quest_ids']}','{$data['addtime']}','{$data['isdelete']}','{$data['updatetime']}');";
-    		if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
+            if($this->dsql->ExecuteNoneQuery($query)) return TRUE;
             else return FALSE; 
         }else{
             return FALSE;
