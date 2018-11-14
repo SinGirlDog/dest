@@ -37,16 +37,12 @@
 						<td><?php echo MyDate('Y-m-d H:i',$file['addtime']);?></td>
 						<td align="center">
 							<a href="?ct=dossier&ac=preview&name=<?php echo $file['name'];?>&id=<?php echo $file['id'];?>" class="thickbox">预览</a> 
-							<?php if($file['quest_ids'])
-							{
-								echo "<a href='?ct=dossier&ac=delete&id=".$file['id']."'>删除</a>";
-							}
-							else
+							<?php if(empty($file['quest_ids']))
 							{
 								echo "<a href='?ct=dossier&ac=parse_save&id=".$file['id']."'>存储</a>";
 							}
 							?>
-							<a href='#' onClick="javascript:del(<?php echo $file['id'];?>)"></a>
+							<a href='?ct=dossier&ac=delete&id=<?php echo $file['id'];?>'>删除</a>
 						</td>
 					</tr>
 					<?php if(!empty($file['son'])) echo $file['son']; }?>

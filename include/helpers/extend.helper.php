@@ -231,3 +231,38 @@ if ( ! function_exists('MyStrReplaceAndTitleReplace'))
     return TitleReplace($replace,$new_prenext);
   }
 }
+
+//exam独立模块-题型英译汉
+if ( ! function_exists('ExamQuestTypeDeal'))
+{
+  function ExamQuestTypeDeal($quest_type)
+  {
+    $show_type = '';
+    switch($quest_type){
+      case "choice_only":
+      $show_type = "单项选择";
+      break;
+      case "choice_more":
+      $show_type = "多项选择";
+      break;
+      default:
+      $show_type = "未知题型";
+      break;
+    }
+    return $show_type;
+  }
+}
+
+//exam独立模块-科目数译汉
+if ( ! function_exists('ExamReidDeal'))
+{
+  function ExamReidDeal($reid)
+  {
+   global $dsql;
+   if($reid){
+     $sql = "SELECT name from `#@__examtype` where id = ".$reid;
+     $res = $dsql->GetOne($sql);
+     return $res['name'];
+   }
+ }
+}

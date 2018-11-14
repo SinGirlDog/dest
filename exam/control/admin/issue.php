@@ -15,6 +15,7 @@ class issue extends Control
         $this->lurd->appName = "EXAM管理";
         $this->lurd->isDebug = FALSE;  //开启调试模式后每次都会生成模板
         $this->lurd->stringSafe = 2;  //默认1(只限制不安全的HTML[script、frame等]，0--为不限，2--为不支持HTML
+        $this->style = 'admin';
         //获取url
         $this->currurl = GetCurUrl();
         //载入模型
@@ -31,41 +32,25 @@ class issue extends Control
     //列出EXAM
     function ac_list()
     {
-        $exam_list = $this->myexam->get_all_list("where 1");
-        $GLOBALS['exam_list'] = $exam_list;
-
-        $status = request('status', '');
-        $tid = request('tid', '');
-        $tid2 = request('tid2', '');
-        if(empty($status) or !isset($status))
-        {
-            $status = 4;
-        }
-		if($status <= 3 && $status >= -1)
-		{
-		     $wherequery = "WHERE status =".$status;
-		     $this->lurd->SetParameter('status',$status);
-		}else{
-		     $wherequery = "WHERE status >= 0";
-		}
-        if($tid2)
-		{
-		     $wherequery .= " and tid2 =".$tid2;
-		     $this->lurd->SetParameter('tid2',$tid2);
-		}else if($tid){
-		     $wherequery .= " and tid = ".$tid;
-		     $this->lurd->SetParameter('tid',$tid);
-		}
+        // $exam_list = $this->myexam->get_all_list("where 1");
+        // $GLOBALS['exam_list'] = $exam_list;
+        $wherequery = "where isdelete != 1";
         $orderquery = "ORDER BY id DESC ";
         //指定每页显示数
-        $this->lurd->pageSize = 20;
-        //指定某字段为强制定义的类型
-        $this->lurd->BindType('dateline', 'TIMESTAMP', 'Y-m-d H:i');
+        $this->lurd->pageSize = 2;
         //获取数据
-        $this->lurd->ListData('id,tid,tidname,tid2,tid2name,title,digest,dateline,replies,status', $wherequery, $orderquery);
+        $this->lurd->ListData('id,reid,title,quest_body,quest_answer,true_answer,quest_analysis,quest_type,isdelete,right_time,wrong_times,addtime,updatetime', $wherequery, $orderquery);
         exit();
     }
     
+    function ac_edit(){
+        $id = request('id','');
+        $thexam = $this->myexam->get_one_exam($id);
+        $GLOBALS['thexam'] = $thexam;
+        $this->SetTemplate('exam_edit.htm');
+        $this->Display();
+    }
+
     //审核
 	function ac_check()
     {

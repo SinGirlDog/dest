@@ -43,7 +43,7 @@ foreach( $blockValue as $key=>$fields )
 					<input type='hidden' name='bc' value='' />
 					<input type='hidden' name='pageno' value='<?php echo $GLOBALS['pageno']; ?>' />
 					<tr height="25" align="center" bgcolor="#FBFCE2">
-						<td width="6%" align="center">选择</td>
+						<!-- <td width="6%" align="center">选择</td> -->
 						<td width="4%" align="center">ID</td>
 						<td width="28%" align="center">EXAM</td>
 						<td width="10%" align="center">生成时间</td>
@@ -51,11 +51,29 @@ foreach( $blockValue as $key=>$fields )
 						<td width="10%" align="center">所属分类</td>
 						<td width="6%" align="center">操作</td>
 					</tr>
-					<?php foreach($exam_list as $key=>$exam)
+					<?php
+$atts = array();
+$atts['tagname'] = 'datalist';
+$blockValue = $this->refObj->GetArcList($atts,$this->refObj,$fields); 
+if(is_array($blockValue)){
+foreach( $blockValue as $key=>$fields )
+{
+?>
+					<tr align='center' bgcolor="#FFFFFF"  onMouseMove="javascript:this.bgColor='#FCFDEE';" onMouseOut="javascript:this.bgColor='#FFFFFF';" height="22" >
+						<td><?php echo $fields['id']; ?></td>
+						<td align='left'><?php echo $fields['title'];?></td>
+						<td><?php echo MyDate("Y-m-d H:i",$fields['addtime']);?></td>
+						<td><?php echo ExamQuestTypeDeal($fields['quest_type']);?></td>
+						<td><?php echo ExamReidDeal($fields['reid']);?></td>
+						<td><a href="?ct=issue&ac=edit&id=<?php echo $fields['id']; ?>">修改</a></td>
+					</tr>
+					<?php
+}
+}?>
+					<!-- <?php foreach($exam_list as $key=>$exam)
 					{
 						?>
 						<tr align='center' bgcolor="#FFFFFF"  onMouseMove="javascript:this.bgColor='#FCFDEE';" onMouseOut="javascript:this.bgColor='#FFFFFF';" height="22" >
-							<td><input type="checkbox" name="id[]" value="123" /></td>
 							<td><?php echo $exam['id'];?></td>
 							<td align='left'><?php echo $exam['title'];?></td>
 							<td><?php echo MyDate("Y-m-d H:i",$exam['addtime']);?></td>
@@ -65,18 +83,18 @@ foreach( $blockValue as $key=>$fields )
 						</tr>
 						<?php
 					}
-					?>
+					?> -->
 					
 
 				</form>
 				<tr bgcolor="#ffffff">
 					<td height="30" colspan="8" align="left">
 						&nbsp;
-						<a href="javascript:AllSel(1)" class="coolbg">全选</a>
+						<!-- <a href="javascript:AllSel(1)" class="coolbg">全选</a>
 						<a href="javascript:AllSel(0)" class="coolbg">取消</a>
 						<a href="javascript:GigestOld()" class="coolbg">推荐</a>
 						<a href="javascript:CheckOld()" class="coolbg">审核</a>
-						<a href="javascript:DelOld()" class="coolbg">删除</a>
+						<a href="javascript:DelOld()" class="coolbg">删除</a> -->
 					</td>
 				</tr>
 				<tr align="right" bgcolor="#F9FCEF">
@@ -85,7 +103,7 @@ foreach( $blockValue as $key=>$fields )
 $atts = array();
 $atts['tagname'] = 'pagelist';
 $atts['listsize'] = '5';
-$atts['listitem'] = 'info,index,end,pre,next,pageno,form';
+$atts['listitem'] = 'info,index,end,pre,next,pageno,option';
  echo $this->refObj->GetPageList($atts,$this->refObj,$fields); 
 ?>
 

@@ -21,7 +21,7 @@ class myexam extends Model
 
 	function save_one_add($data=array()){
 		if(is_array($data)){
-			$query = "INSERT INTO `#@__exam`(id,reid,title,quest_body,quest_answer,true_answer,quest_analysis,addtime,updatetime) VALUES('','{$data['reid']}','{$data['title']}','{$data['quest_body']}','{$data['quest_answer']}','{$data['true_answer']}','{$data['quest_analysis']}','{$data['addtime']}','{$data['updatetime']}');";
+			$query = "INSERT INTO `#@__exam`(id,reid,title,quest_body,quest_answer,true_answer,quest_analysis,quest_type,addtime,updatetime) VALUES('','{$data['reid']}','{$data['title']}','{$data['quest_body']}','{$data['quest_answer']}','{$data['true_answer']}','{$data['quest_analysis']}','{$data['quest_type']}','{$data['addtime']}','{$data['updatetime']}');";
 			$res = $this->dsql->ExecuteNoneQuery($query);
 			if($res){
 				return mysql_insert_id();
@@ -48,6 +48,20 @@ class myexam extends Model
 			else{
 				return FALSE;
 			}
+		}
+	}
+
+	function get_one_exam($id){
+		if(empty($id)){
+			return FALSE;
+		}
+		else{
+			$wheresql = "where id = ".$id;
+			$query = "SELECT * FROM `#@__exam` ".$wheresql." ORDER BY id DESC";
+			$this->dsql->SetQuery($query);
+			$this->dsql->Execute();
+			$exam_one = $this->dsql->GetArray();
+			return $exam_one;
 		}
 	}
 
