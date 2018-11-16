@@ -51,6 +51,22 @@ class issue extends Control
         $this->Display();
     }
 
+    function ac_save_edit(){
+        $id = request('id','');
+        $data['quest_body'] = request('qbody','');
+        $data['title'] = substr($data['quest_body'],0,80);
+        $data['quest_answer'] = request('qanswer','');
+        $data['true_answer'] = request('tanswer','');
+        $data['quest_analysis'] = request('qanalysis','');
+        $res = $this->myexam->update_one_exam($data,$id);
+        if($res){
+            ShowMsg('修改成功！','?ct=issue');
+        }
+        else{
+            ShowMsg('本次修改失败了!','-1');
+        }
+    }
+
     //审核
 	function ac_check()
     {

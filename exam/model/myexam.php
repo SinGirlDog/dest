@@ -65,4 +65,17 @@ class myexam extends Model
 		}
 	}
 
+	function update_one_exam($data,$id){
+		if(empty($id)){
+			return FALSE;
+		}
+		else{
+			$wheresql = "where id = ".$id;
+			$query = "UPDATE `#@__exam` SET title = '$data[title]',quest_body = '$data[quest_body]',quest_answer = '$data[quest_answer]',true_answer = '$data[true_answer]',quest_analysis = '$data[quest_analysis]' ".$wheresql;
+
+			$this->dsql->ExecuteNoneQuery($query);
+			return TRUE;
+		}
+	}
+
 }
