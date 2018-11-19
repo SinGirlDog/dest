@@ -23,7 +23,7 @@ $fields = array();
 			<table width="98%" border="0" cellpadding="1" cellspacing="1" align="center" class="tbtitle" style="background:#cfcfcf;">
 				<tr>
 					<td height="26" colspan="8" align="left" bgcolor="#EDF9D5" background="static/images/tbg.gif" style="padding-left:10px;">
-						<b>EXAM列表</b>
+						<b> EXAM列表 | <a href="admin.php?ct=issue&ac=add_exam">添加</a> |</b>
 					</td>
 				</tr>
 				<form name="lurdform" action="<?php
@@ -65,7 +65,10 @@ foreach( $blockValue as $key=>$fields )
 						<td><?php echo MyDate("Y-m-d H:i",$fields['addtime']);?></td>
 						<td><?php echo ExamQuestTypeDeal($fields['quest_type']);?></td>
 						<td><?php echo ExamReidDeal($fields['reid']);?></td>
-						<td><a href="?ct=issue&ac=edit&id=<?php echo $fields['id']; ?>">修改</a></td>
+						<td>
+							<a href="?ct=issue&ac=edit&id=<?php echo $fields['id']; ?>">修改</a>|
+							<a href="?ct=issue&ac=delete&id=<?php echo $fields['id']; ?>">删除</a>
+						</td>
 					</tr>
 					<?php
 }

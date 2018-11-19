@@ -6,6 +6,8 @@ $fields = array();
 <head>
 	<title>hello word</title>
 	<link href="<?php echo $GLOBALS['cfg_templets_skin']; ?>/style/dedecms.css" rel="stylesheet" media="screen" type="text/css" />
+	<script type="text/javascript" src="static/js/j.js"></script>
+	<script type="text/javascript" src="static/js/ajax_index.js"></script>
 </head>
 <body>
 	<?php 
@@ -17,12 +19,17 @@ $fields = array();
 			<li>welcome</li>
 			<li>
 				<span>select:</span>
-				<select>
-					<option>-请选择-</option>
-					<option>-飞-</option>
-					<option>-马-</option>
-					<option>-牧-</option>
-					<option>-场-</option>
+				<select name="reid_level_1" id="select_1" class="select_ajax">
+					<option value ="">-请选择-</option>
+					<?php 
+					foreach($examtp as $key=>$val)
+					{
+						echo "<option value =".$val['id'].">".$val['name']."</option>";
+					}
+					?>
+				</select>
+				<select name="reid_level_2" id="select_2" class="select_ajax">
+					<option value ="">-请选择-</option>
 				</select>
 			</li>
 			<li>

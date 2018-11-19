@@ -128,14 +128,9 @@ class dossier extends Control{
     }
 
     function ac_ajax_get_select(){
-        $html = "<option value=''>-请-选-择-</option>";
+        $html = "";
         $reid = request('reid', '');
-        $examtp = $this->type->get_examtype("where reid = ".$reid);
-        if(is_array($examtp) && !empty($examtp)){
-            foreach($examtp as $key => $val){
-                $html .= "<option value='".$val['id']."'>".$val['name']."</option>";
-            }
-        }
+        $html = $this->type->ac_ajax_get_select($reid);
         echo $html;
     }
 

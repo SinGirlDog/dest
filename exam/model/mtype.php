@@ -212,6 +212,18 @@ class mtype extends Model
             return $title;
         }
     }
+
+    function ac_ajax_get_select($reid){
+        $html = "<option value=''>-请-选-择-</option>";
+        // $reid = $reid ? $reid : request('reid', '');
+        $examtp = $this->get_examtype("where reid = ".$reid);
+        if(is_array($examtp) && !empty($examtp)){
+            foreach($examtp as $key => $val){
+                $html .= "<option value='".$val['id']."'>".$val['name']."</option>";
+            }
+        }
+        return $html;
+    }
     
     
 }

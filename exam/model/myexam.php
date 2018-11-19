@@ -71,7 +71,7 @@ class myexam extends Model
 		}
 		else{
 			$wheresql = "where id = ".$id;
-			$query = "UPDATE `#@__exam` SET title = '$data[title]',quest_body = '$data[quest_body]',quest_answer = '$data[quest_answer]',true_answer = '$data[true_answer]',quest_analysis = '$data[quest_analysis]' ".$wheresql;
+			$query = "UPDATE `#@__exam` SET title = '$data[title]',quest_body = '$data[quest_body]',quest_answer = '$data[quest_answer]',true_answer = '$data[true_answer]',quest_analysis = '$data[quest_analysis]',updatetime = '$data[updatetime]' ".$wheresql;
 
 			$this->dsql->ExecuteNoneQuery($query);
 			return TRUE;
