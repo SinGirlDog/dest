@@ -78,4 +78,12 @@ class myexam extends Model
 		}
 	}
 
+	function get_questions_byids($quest_ids){
+		if($quest_ids){
+			$wheresql = "WHERE id IN (".$quest_ids.")";
+			$questions = $this->get_all_list($wheresql);
+			return $questions;
+		}
+	}
+
 }

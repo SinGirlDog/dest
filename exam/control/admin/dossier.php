@@ -10,16 +10,16 @@ class dossier extends Control{
     function dossier(){
         parent::__construct();
         $this->temp = DEDEAPPTPL.'/admin';
-        $this->lurd = new Lurd('#@__examdossier', $this->temp, $this->temp.'/lurd');
+        $this->lurd = new Lurd('#@__examfile', $this->temp, $this->temp.'/lurd');
         $this->lurd->appName = "JZ管理";
         $this->lurd->isDebug = FALSE;  //开启调试模式后每次都会生成模板
         $this->lurd->stringSafe = 2;  //默认1(只限制不安全的HTML[script、frame等]，0--为不限，2--为不支持HTML
         //获取url
+        $this->style = 'admin';
         $this->currurl = GetCurUrl();
         //载入模型
         $this->answer = $this->Model('examanswer');
         $this->question = $this->Model('mquestion');
-        $this->style = 'admin';
         $this->type = $this->Model('mtype');
         $this->myfile = $this->Model('mfile');
         $this->myexam = $this->Model('myexam');
@@ -36,29 +36,13 @@ class dossier extends Control{
 
         $file_list = $this->myfile->get_allfile();
         $GLOBALS['file_list'] = $file_list;
-        // $this->ac_xmluploadtest();
-        $ifcheck = request('ifcheck', '2');
-        $examid = request('examid', '');
-        if($ifcheck == 0){
-            $wherequery = "WHERE ifcheck = 0";
-            $this->lurd->SetParameter('ifcheck',0);
-        }else if($ifcheck == 1){
-            $wherequery = "WHERE ifcheck = 1";
-            $this->lurd->SetParameter('ifcheck',1);
-        }else{
-            $wherequery = "";
-        }
-        if($examid){
-            $wherequery .= "WHERE examid =".$examid;
-            $this->lurd->SetParameter('examid',$examid);
-        }
+       
+        $wherequery = "where isdelete != 1";
         $orderquery = "ORDER BY id DESC ";
         // 指定每页显示数
-        $this->lurd->pageSize = 20;
-        // 指定某字段为强制定义的类型
-        $this->lurd->BindType('dateline', 'TIMESTAMP', 'Y-m-d H:i');
+        // $this->lurd->pageSize = 2;reid,title,quest_ids,addtime,updatetime
         // 获取数据
-        $this->lurd->ListData('id,examid,uid,username,dateline,content,ifcheck', $wherequery, $orderquery);
+        $this->lurd->ListData('id,reid,title,quest_ids,addtime,updatetime', $wherequery, $orderquery);
         exit();
     }
 

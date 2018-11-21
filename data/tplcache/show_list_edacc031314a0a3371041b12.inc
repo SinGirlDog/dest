@@ -4,7 +4,7 @@ $fields = array();
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>hello word</title>
+	<title>show list</title>
 	<link href="<?php echo $GLOBALS['cfg_templets_skin']; ?>/style/dedecms.css" rel="stylesheet" media="screen" type="text/css" />
 
 </head>

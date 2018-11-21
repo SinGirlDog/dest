@@ -2,7 +2,7 @@
 /**
  * 文件
  *
- * @version        $Id: mtype.php 15:57 2018/11/11 Sun $
+ * @version        $Id: mfile.php 15:57 2018/11/11 Sun $
  */
 
 class mfile extends Model

@@ -10,6 +10,9 @@ class index extends Control {
         $this->mtype = $this->Model("mtype");
         $this->mvisitor = $this->Model("mvisitor");
         $this->mfile = $this->Model("mfile");
+        $this->myexam = $this->Model("myexam");
+        $this->mpaper = $this->Model("mpaper");
+        $this->myanswer = $this->Model("myanswer");
     }
 
     function ac_start(){
@@ -36,18 +39,16 @@ class index extends Control {
         $data['name'] = request('name','');
         $data['mobile'] = request('mobile','');
         $res = $this->mvisitor->safe_save($data);
-        $_SESSION[$this->skey] = $data;
         if($res){
-            // header("Location:https://baidu.com");
+            $this->session_my_register($data);
             header("Location:./index.php?c=index&a=show_list");
         }
         else{
-            echo "无效信息；请重新填写！";
+            ShowMsg('无效信息；请重新填写！','-1');
         }
     }
 
     public function ac_show_list(){
-        // var_dump($_SESSION[$this->skey]);
         $sdata = $_SESSION[$this->skey];
         $GLOBALS[$this->skey] = $sdata;
         $GLOBALS['filelist'] = $this->mfile->get_allfile($sdata['reid']);
@@ -56,15 +57,75 @@ class index extends Control {
     }
 
     public function ac_open_file(){
-        $this->session_my_check();
+        $this->session_req_check();
         $fileid = request('fileid','');
-        $file_cont = $this->mfile->get_onefile($fileid);
-        var_dump($file_cont);
+        $paperid = $this->mpaper->add_paper_by_fileid($fileid);
+        if($answer_id){
+            header("Location:./index.php?c=index&a=show_one_paper&paperid=".$paperid);
+        }
+        else{
+            ShowMsg("Sorry 考试卷打开失败了！","-1");
+        }
     }
 
-    protected function session_my_check(){
-
+    public function ac_show_one_paper(){
+        $this->session_rew_check();
+        $paperid = request('paperid','');
+        $paper_data = $this->mpaper->get_onepaper($paperid);
+        $quest_choice_only = $this->myexam->get_questions_byids($paper_data['quest_choice_only']);
+        $quest_choice_more = $this->myexam->get_questions_byids($paper_data['quest_choice_more']);
+        $GLOBALS['paper_data'] = $paper_data;
+        $GLOBALS['quest_choice_only'] = $quest_choice_only;
+        $GLOBALS['quest_choice_more'] = $quest_choice_more;
+        $this->SetTemplate('show_one_paper.htm');
+        $this->Display();
     }
+
+    public function ac_paper_answered(){
+        $answer_id = $this->myanswer->add_answer_by_paperid();
+        if($answer_id){
+            header("Location:./index.php?c=index&a=show_jiexi&answer_id=".$answer_id);
+        }
+        else{
+            ShowMsg("Sorry 答题卡提交失败了！","-1");
+        }
+    }
+
+    public function ac_show_jiexi(){
+        echo "Hello Tom; This is JIEXI speaking ~~~ ";
+    }
+
+    protected function session_my_register($data){
+        if(!empty($data)){
+            $_SESSION[$this->skey] = $data;
+            $_SESSION[$this->skey."_".$data['mobile']] = 1;
+        }
+        else{
+            ShowMsg('无效信息!','./index.php?c=index');
+            exit();
+        }
+    }
+    protected function session_req_check(){
+        $name = request('name','');
+        $mobile = request('mobile','');
+        $sdata = $_SESSION[$this->skey];
+        if($sdata['name'] == $name && $sdata['mobile'] == $mobile){
+            $DoNothing = true;
+        }
+        else{
+            ShowMsg('无效信息!','./index.php?c=index');
+            exit();
+        }
+    }
+    protected function session_rew_check(){
+        $sdata = $_SESSION[$this->skey];
+        if($_SESSION[$this->skey."_".$sdata['mobile']] != 1){
+            ShowMsg('无效信息!','./index.php?c=index');
+            exit();
+        }
+    }
+
+
     public function ac_getList() {
         //通过request()来获取参数
         $id = request('id');

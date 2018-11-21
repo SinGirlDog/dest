@@ -66,7 +66,9 @@ $fields = array();
       </td>
     </tr>
     <tr>
-      <td height="30" style="padding-right:10px;" align="right" bgcolor="#F8FCF1"><input name="submit3" type="submit" value="更新排序" class="np coolbg"/></td>
+      <td height="30" style="padding-right:10px;" align="right" bgcolor="#F8FCF1">
+        <!-- <input name="submit3" type="submit" value="更新排序" class="np coolbg"/> -->
+      </td>
     </tr>
   </table>
 </form>
