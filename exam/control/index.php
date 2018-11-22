@@ -49,9 +49,12 @@ class index extends Control {
     }
 
     public function ac_show_list(){
+        $this->session_rew_check();
         $sdata = $_SESSION[$this->skey];
         $GLOBALS[$this->skey] = $sdata;
-        $GLOBALS['filelist'] = $this->mfile->get_allfile($sdata['reid']);
+        if($sdata['reid']){
+            $GLOBALS['filelist'] = $this->mfile->get_allfile($sdata['reid']);
+        }
         $this->SetTemplate('show_list.htm');
         $this->Display();
     }
@@ -60,7 +63,7 @@ class index extends Control {
         $this->session_req_check();
         $fileid = request('fileid','');
         $paperid = $this->mpaper->add_paper_by_fileid($fileid);
-        if($answer_id){
+        if($paperid){
             header("Location:./index.php?c=index&a=show_one_paper&paperid=".$paperid);
         }
         else{
@@ -82,6 +85,24 @@ class index extends Control {
     }
 
     public function ac_paper_answered(){
+        $paper_id = request('paper_id','');
+        $only = request('only','');
+        $more = request('more','');
+        $only_str = implode(',', $only);
+        $more_str = json_encode($more);
+
+        $paper_data = $this->mpaper->get_onepaper($paper_id);
+        $cankao_choice_only = $this->myexam->get_cankao_answer_byids($paper_data['quest_choice_only']);
+        $cankao_choice_more = $this->myexam->get_cankao_answer_byids($paper_data['quest_choice_more']);
+        $answer_choice_only = $this->myexam->parse_choice_only_answer($only_str);
+        $answer_choice_more = $this->myexam->parse_choice_more_answer($more_str);
+
+        $fenshu_only = $this->correct_fenshu_only($answer_choice_only,$cankao_choice_only);
+        $fenshu_more = $this->correct_fenshu_more($answer_choice_more,$cankao_choice_more);
+        var_dump($fenshu_only);
+        var_dump($fenshu_more);
+        die();
+
         $answer_id = $this->myanswer->add_answer_by_paperid();
         if($answer_id){
             header("Location:./index.php?c=index&a=show_jiexi&answer_id=".$answer_id);
@@ -92,7 +113,30 @@ class index extends Control {
     }
 
     public function ac_show_jiexi(){
-        echo "Hello Tom; This is JIEXI speaking ~~~ ";
+        $this->session_rew_check();
+        $answer_data = $this->myanswer->get_oneanswer();
+        $paper_data = $this->mpaper->get_onepaper($answer_data['paper_id']);
+        $quest_choice_only = $this->myexam->get_questions_byids($paper_data['quest_choice_only']);
+        $quest_choice_more = $this->myexam->get_questions_byids($paper_data['quest_choice_more']);
+        $answer_choice_only = $this->myexam->parse_choice_only_answer($answer_data['answer_choice_only']);
+        $answer_choice_more = $this->myexam->parse_choice_more_answer($answer_data['answer_choice_more']);
+        $cankao_choice_only = $this->myexam->get_cankao_answer_byids($paper_data['quest_choice_only']);
+        $cankao_choice_more = $this->myexam->get_cankao_answer_byids($paper_data['quest_choice_more']);
+        $analysis_choice_only = $this->myexam->get_analysis_byids($paper_data['quest_choice_only']);
+        $analysis_choice_more = $this->myexam->get_analysis_byids($paper_data['quest_choice_more']);
+
+        $GLOBALS['answer_data'] = $answer_data;
+        $GLOBALS['quest_choice_only'] = $quest_choice_only;
+        $GLOBALS['quest_choice_more'] = $quest_choice_more;
+        $GLOBALS['answer_choice_only'] = $answer_choice_only;
+        $GLOBALS['answer_choice_more'] = $answer_choice_more;
+        $GLOBALS['cankao_choice_only'] = $cankao_choice_only;
+        $GLOBALS['answer_choice_more'] = $answer_choice_more;
+        $GLOBALS['analysis_choice_only'] = $analysis_choice_only;
+        $GLOBALS['analysis_choice_more'] = $analysis_choice_more;
+        // var_dump($answer_choice_more);die();
+        $this->SetTemplate('show_jiexi_result.htm');
+        $this->Display();
     }
 
     protected function session_my_register($data){
@@ -125,6 +169,75 @@ class index extends Control {
         }
     }
 
+    protected function correct_fenshu_only($answer_arr,$cankao_arr){
+        $fenshu = 0;
+        $times_arr = array();
+        $cankao_answer_arr = $cankao_arr['answer'];
+        $cankao_id_arr = $cankao_arr['id'];
+        foreach($answer_arr as $key => $answer){
+            if($answer == $cankao_answer_arr[$key]){
+                $fenshu++;
+                $times_arr[$cankao_id_arr[$key]] = 'right_times';
+            }
+            else{
+                //count err times
+                $times_arr[$cankao_id_arr[$key]] = 'wrong_times';
+            }
+        }
+        //cont answer times
+        $this->count_right_or_wrong_times($times_arr);
+        
+        return $fenshu;
+    }
+
+    protected function correct_fenshu_more($answer_arr,$cankao_arr){
+        $fenshu = 0;
+        $times_arr = array();
+        $cankao_answer_arr = $cankao_arr['answer'];
+        $cankao_id_arr = $cankao_arr['id'];
+        if(is_array($answer_arr[0])){
+            foreach($answer_arr as $key => $answer){
+                $answer_length = sizeof($answer);
+                if($answer_length > 4 or $answer_length < 2){
+                    //选项太少或者太多直接零分;
+                    $times_arr[$cankao_id_arr[$key]] = 'wrong_times';
+                    continue;
+                    //count err times
+                }
+                $cankao_length = sizeof($cankao_answer_arr[$key]);
+                $intersect_length = sizeof(array_intersect($answer, $cankao_answer_arr[$key]));
+                if( ($answer_length == $cankao_length) && ($intersect_length == $cankao_length) ){
+                    //选项完全匹配则满分;
+                    $fenshu += 2;
+                    $times_arr[$cankao_id_arr[$key]] = 'right_times';
+                    continue;
+                }
+                else{
+                    //count err times
+                    $times_arr[$cankao_id_arr[$key]] = 'wrong_times';
+                }
+                $temp_fen = 0;
+                foreach($answer as $ans){
+                    //选对一个半分;选错一个零蛋;
+                    if(in_array($ans,$cankao_answer_arr[$key])){
+                        $temp_fen += 0.5;
+                    }
+                    else{
+                        $temp_fen = 0;
+                        break;
+                    }
+                }
+                $fenshu += $temp_fen;
+            }
+        }
+        $this->count_right_or_wrong_times($times_arr);
+        
+        return $fenshu;
+    }
+
+    protected function count_right_or_wrong_times($times_arr){
+        $this->myexam->count_right_or_wrong_times($times_arr);
+    }
 
     public function ac_getList() {
         //通过request()来获取参数

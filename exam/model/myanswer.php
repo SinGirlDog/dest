@@ -13,6 +13,7 @@ class myanswer extends Model
 		$more = request('more','');
 		$only_str = implode(',', $only);
 		$more_str = json_encode($more);
+		
 		if($paper_id){
 			$paper_rs = $this->dsql->GetOne("SELECT * FROM `#@__exampaper` WHERE id='{$paper_id}'");
 
@@ -31,6 +32,14 @@ class myanswer extends Model
 		else{
 			return FALSE;
 		}
+	}
+
+	function get_oneanswer($answer_id = ""){
+		if(empty($answer_id)){
+			$answer_id = request("answer_id","");
+		}
+		$rs = $this->dsql->GetOne("SELECT * FROM `#@__examanswer` WHERE id='{$answer_id}'");
+		return $rs;
 	}
 
 }
